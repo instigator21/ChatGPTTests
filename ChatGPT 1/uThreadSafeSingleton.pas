@@ -79,12 +79,15 @@ end;
 
 procedure TThreadSafeSingleton.RemoveToken(const AToken: string);
 begin
-  TMonitor.Enter(FLock);
-  try
-    var IndexOfToken := FTokens.IndexOf(AToken);
-    FTokens.Delete(IndexOfToken);
-  finally
-    TMonitor.Exit(FLock);
+  if TokenExists(AToken) then
+  begin
+    TMonitor.Enter(FTokens);
+    try
+      var IndexOfToken := FTokens.IndexOf(AToken);
+      FTokens.Delete(IndexOfToken);
+    finally
+      TMonitor.Exit(FTokens);
+    end;
   end;
 end;
 
