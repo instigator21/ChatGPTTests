@@ -25,9 +25,8 @@ type
   end;
 
 implementation
-
 uses
-  System.Classes;
+  System.Classes, System.Threading;
 
 procedure TTestThreadSafeSingleton.SetUp;
 begin
@@ -102,27 +101,27 @@ end;
 
 procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrently;
 var
-  Thread1, Thread2: TThread;
+  Task1, Task2: ITask;
 begin
-  // Test adding and removing tokens concurrently using two threads
-  Thread1 := TThread.CreateAnonymousThread(
+  // Test adding and removing tokens concurrently using two tasks
+  Task1 := TTask.Create(
     procedure
     begin
       FSingleton.AddToken('foo');
     end
   );
-  Thread2 := TThread.CreateAnonymousThread(
+  Task2 := TTask.Create(
     procedure
     begin
       FSingleton.RemoveToken('foo');
     end
   );
-  Thread1.Start;
-  Thread2.Start;
-  Thread1.WaitFor;
-  Thread2.WaitFor;
+  Task1.Start;
+  Task2.Start;
+  TTask.WaitForAll([Task1, Task2]);
   CheckEquals(0, FSingleton.GetTokenCount);
 end;
+
 
 initialization
   // Register the test fixture
