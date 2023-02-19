@@ -68,12 +68,14 @@ end;
 
 procedure TThreadSafeSingleton.AddToken(const AToken: string);
 begin
-  TMonitor.Enter(FLock);
-  try
-    if not self.ContainsToken(AToken) then
+  if not TokenExists(AToken) then
+  begin
+    TMonitor.Enter(FLock);
+    try
       FTokens.Add(AToken);
-  finally
-    TMonitor.Exit(FLock);
+    finally
+      TMonitor.Exit(FLock);
+    end;
   end;
 end;
 

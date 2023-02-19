@@ -29,7 +29,7 @@ type
 
 implementation
 uses
-  System.Classes, System.Threading, System.SysUtils;
+  System.Classes, System.Threading, System.SysUtils, System.SyncObjs;
 
 procedure TTestThreadSafeSingleton.SetUp;
 begin
@@ -132,16 +132,29 @@ begin
 end;
 
 procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithParallel;
+var
+  Event: TEvent;
 begin
-  // Test adding and removing tokens concurrently using one thread
-  TParallel.For(1, 1000,
-    procedure(I: Integer)
-    begin
-      FSingleton.AddToken(IntToStr(I));
-      FSingleton.RemoveToken(IntToStr(I));
-    end
-  );
-  CheckEquals(0, FSingleton.GetTokenCount);
+  Event := TEvent.Create(nil, False, False, '');
+  try
+    TParallel.For(1, 1000,
+      procedure(I: Integer)
+      begin
+        TMonitor.Enter(FSingleton);
+        try
+          FSingleton.AddToken(IntToStr(I));
+          FSingleton.RemoveToken(IntToStr(I));
+        finally
+          TMonitor.Exit(FSingleton);
+        end;
+      end
+    );
+    Event.SetEvent;
+    CheckEquals(0, FSingleton.GetTokenCount);
+    Event.WaitFor(5000); // Wait for up to 5 seconds for the event to be set
+  finally
+    Event.Free;
+  end;
 end;
 
 procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithThreads;
