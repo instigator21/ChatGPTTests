@@ -143,8 +143,8 @@ initialization
   TThreadSafeSingleton.Lock := TCriticalSection.Create;
 
 finalization
-  TThreadSafeSingleton.Lock.Free;
   TThreadSafeSingleton.Instance.Free;
+  TThreadSafeSingleton.Lock.Free;
 
 end.
 
