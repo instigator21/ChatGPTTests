@@ -37,7 +37,13 @@ end;
 
 destructor TThreadSafeSingleton.Destroy;
 begin
-  FTokens.Free;
+  TMonitor.Enter(FLock);
+  try
+    FTokens.Free;
+  finally
+    TMonitor.Exit(FLock);
+  end;
+
   inherited;
 end;
 
@@ -83,12 +89,12 @@ procedure TThreadSafeSingleton.RemoveToken(const AToken: string);
 begin
   if TokenExists(AToken) then
   begin
-    TMonitor.Enter(FTokens);
+    TMonitor.Enter(FLock);
     try
       var IndexOfToken := FTokens.IndexOf(AToken);
       FTokens.Delete(IndexOfToken);
     finally
-      TMonitor.Exit(FTokens);
+      TMonitor.Exit(FLock);
     end;
   end;
 end;
@@ -132,7 +138,6 @@ begin
     FLock.Leave;
   end;
 end;
-
 
 initialization
   TThreadSafeSingleton.Lock := TCriticalSection.Create;
