@@ -23,6 +23,7 @@ type
     function TokenExists(const AToken: string): Boolean;
     function GetTokenCount: Integer;
     function ContainsToken(const Token: string): Boolean;
+    procedure Clear;
   end;
 
 implementation
@@ -102,6 +103,16 @@ begin
   TMonitor.Enter(FLock);
   try
     Result := FTokens.Count;
+  finally
+    TMonitor.Exit(FLock);
+  end;
+end;
+
+procedure TThreadSafeSingleton.Clear;
+begin
+  TMonitor.Enter(FLock);
+  try
+    FTokens.Clear;
   finally
     TMonitor.Exit(FLock);
   end;

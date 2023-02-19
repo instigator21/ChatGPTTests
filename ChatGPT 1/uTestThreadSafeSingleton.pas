@@ -12,6 +12,7 @@ type
     FSingleton: TThreadSafeSingleton;
   public
     procedure SetUp; override;
+    procedure TearDown; override;
   published
     procedure TestGetInstance;
     procedure TestAddToken;
@@ -124,6 +125,11 @@ begin
   CheckEquals(0, FSingleton.GetTokenCount);
 end;
 
+
+procedure TTestThreadSafeSingleton.TearDown;
+begin
+  FSingleton.Clear;
+end;
 
 procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithParallel;
 begin
