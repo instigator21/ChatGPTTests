@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{EA894AA1-7834-49C3-9F8B-1E6489CC75F1}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="ChatGPT_1.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="DUnitX\DUnitXTests.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Test\ChatGPT_1Tests.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="ChatGPT_1">
+        <MSBuild Projects="ChatGPT_1.dproj"/>
+    </Target>
+    <Target Name="ChatGPT_1:Clean">
+        <MSBuild Projects="ChatGPT_1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ChatGPT_1:Make">
+        <MSBuild Projects="ChatGPT_1.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="DUnitXTests">
+        <MSBuild Projects="DUnitX\DUnitXTests.dproj"/>
+    </Target>
+    <Target Name="DUnitXTests:Clean">
+        <MSBuild Projects="DUnitX\DUnitXTests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DUnitXTests:Make">
+        <MSBuild Projects="DUnitX\DUnitXTests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ChatGPT_1Tests">
+        <MSBuild Projects="Test\ChatGPT_1Tests.dproj"/>
+    </Target>
+    <Target Name="ChatGPT_1Tests:Clean">
+        <MSBuild Projects="Test\ChatGPT_1Tests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ChatGPT_1Tests:Make">
+        <MSBuild Projects="Test\ChatGPT_1Tests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="ChatGPT_1;DUnitXTests;ChatGPT_1Tests"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="ChatGPT_1:Clean;DUnitXTests:Clean;ChatGPT_1Tests:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="ChatGPT_1:Make;DUnitXTests:Make;ChatGPT_1Tests:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
