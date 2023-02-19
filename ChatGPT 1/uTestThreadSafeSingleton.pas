@@ -21,12 +21,14 @@ type
     procedure TestContainsToken;
     procedure TestAddDuplicateToken;
     procedure TestRemoveNonExistentToken;
-    procedure TestAddAndRemoveTokensConcurrently;
+    procedure TestAddAndRemoveTokensConcurrentlyWithTasks;
+    procedure TestAddAndRemoveTokensConcurrentlyWithParallel;
+    procedure TestAddAndRemoveTokensConcurrentlyWithThreads;
   end;
 
 implementation
 uses
-  System.Classes, System.Threading;
+  System.Classes, System.Threading, System.SysUtils;
 
 procedure TTestThreadSafeSingleton.SetUp;
 begin
@@ -99,7 +101,7 @@ begin
   CheckEquals(1, FSingleton.GetTokenCount);
 end;
 
-procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrently;
+procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithTasks;
 var
   Task1, Task2: ITask;
 begin
@@ -122,6 +124,43 @@ begin
   CheckEquals(0, FSingleton.GetTokenCount);
 end;
 
+
+procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithParallel;
+begin
+  // Test adding and removing tokens concurrently using one thread
+  TParallel.For(1, 1000,
+    procedure(I: Integer)
+    begin
+      FSingleton.AddToken(IntToStr(I));
+      FSingleton.RemoveToken(IntToStr(I));
+    end
+  );
+  CheckEquals(0, FSingleton.GetTokenCount);
+end;
+
+procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithThreads;
+var
+  Thread1, Thread2: TThread;
+begin
+  // Test adding and removing tokens concurrently using two threads
+  Thread1 := TThread.CreateAnonymousThread(
+    procedure
+    begin
+      FSingleton.AddToken('foo');
+    end
+  );
+  Thread2 := TThread.CreateAnonymousThread(
+    procedure
+    begin
+      FSingleton.RemoveToken('foo');
+    end
+  );
+  Thread1.Start;
+  Thread2.Start;
+  Thread1.WaitFor;
+  Thread2.WaitFor;
+  CheckEquals(0, FSingleton.GetTokenCount);
+end;
 
 initialization
   // Register the test fixture

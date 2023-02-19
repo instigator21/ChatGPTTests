@@ -1,2 +1,4 @@
 *.res
 *.dcu
+*.exe
+*.identcache
