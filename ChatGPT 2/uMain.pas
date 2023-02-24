@@ -9,6 +9,8 @@ uses
 type
   TForm1 = class(TForm)
     btn1: TButton;
+    mmoIn: TMemo;
+    mmoOut: TMemo;
     procedure btn1Click(Sender: TObject);
   private
     { Private declarations }
@@ -22,25 +24,14 @@ var
 implementation
 
 uses
-  System.JSON;
+  uChatGPTAPI;
 
 {$R *.dfm}
 
 procedure TForm1.btn1Click(Sender: TObject);
-var
-  Str: string;
-  JSONArray: TJSONArray;
+
 begin
-  Str := '[1, 2, 3, 4]';
-  JSONArray := TJSONObject.ParseJSONValue(Str) as TJSONArray;
-  if Assigned(JSONArray) then
-  begin
-    try
-      // do something with JSONArray
-    finally
-      JSONArray.Free;
-    end;
-  end;
+  mmoOut.Text := TChatGPT.GenerateText('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', mmoIn.Text);
 end;
 
 end.

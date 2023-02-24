@@ -31,15 +31,20 @@ begin
     var JsonObj1 := TJSONObject.Create(TJSONPair.Create('prompt', TextToProcess));
     JsonObj1.AddPair(TJSONPair.Create('max_tokens', '60'));
 
-    RequestContent := TStringStream.Create(JsonObj1.ToString, TEncoding.UTF8);
+    var JsonString := 
+      '{ "prompt": "Hello, my name is ChatGPT.",'+
+  '"max_tokens": 60 }';
+
+    RequestContent := TStringStream.Create(JsonString, TEncoding.UTF8);
 
     try
       Request := TNetHTTPRequest.Create(nil);
       try
+        Request.Client := HTTPClient;
         Request.MethodString := 'POST';
         Request.URL := 'https://api.openai.com/v1/engines/davinci-codex/completions';
         Request.ContentStream := RequestContent;
-        Request.CustomHeaders['Content-Type'] := 'application/json';
+        Request.CustomHeaders['Content-Type'] := 'application/raw';
         Request.CustomHeaders['Authorization'] := Format('Bearer %s', [APIKey]);
         ResponseContent := Request.Execute().ContentAsString();
         ResponseJSON := TJSONObject.ParseJSONValue(ResponseContent) as TJSONObject;
