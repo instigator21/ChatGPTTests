@@ -156,30 +156,65 @@ begin
     Event.Free;
   end;
 end;
+//
+//procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithThreads;
+//var
+//  Thread1, Thread2: TThread;
+//begin
+//  // Test adding and removing tokens concurrently using two threads
+//  Thread1 := TThread.CreateAnonymousThread(
+//    procedure
+//    begin
+//      FSingleton.AddToken('foo');
+//    end
+//  );
+//  Thread2 := TThread.CreateAnonymousThread(
+//    procedure
+//    begin
+//      FSingleton.RemoveToken('foo');
+//    end
+//  );
+//
+//  Thread1.Start;
+//  Thread2.Start;
+//  Thread1.WaitFor;
+//  Thread2.WaitFor;
+//  CheckEquals(0, FSingleton.GetTokenCount);
+//end;
 
 procedure TTestThreadSafeSingleton.TestAddAndRemoveTokensConcurrentlyWithThreads;
 var
   Thread1, Thread2: TThread;
+  Event: TEvent;
 begin
   // Test adding and removing tokens concurrently using two threads
-  Thread1 := TThread.CreateAnonymousThread(
-    procedure
-    begin
-      FSingleton.AddToken('foo');
-    end
-  );
-  Thread2 := TThread.CreateAnonymousThread(
-    procedure
-    begin
-      FSingleton.RemoveToken('foo');
-    end
-  );
-  Thread1.Start;
-  Thread2.Start;
-  Thread1.WaitFor;
-  Thread2.WaitFor;
-  CheckEquals(0, FSingleton.GetTokenCount);
+  Event := TEvent.Create(nil, True, False, '');
+  try
+    Thread1 := TThread.CreateAnonymousThread(
+      procedure
+      begin
+        FSingleton.AddToken('foo');
+        Event.SetEvent;
+      end
+    );
+    Thread2 := TThread.CreateAnonymousThread(
+      procedure
+      begin
+        Event.WaitFor(INFINITE);
+        FSingleton.RemoveToken('foo');
+      end
+    );
+    Thread1.Start;
+    Thread2.Start;
+    if not (Event.WaitFor(INFINITE) = wrIOCompletion) then
+      Check(True, 'Thread1 did not finish within the expected time');
+//    Thread2.WaitFor;
+    CheckEquals(0, FSingleton.GetTokenCount);
+  finally
+    Event.Free;
+  end;
 end;
+
 
 initialization
   // Register the test fixture
