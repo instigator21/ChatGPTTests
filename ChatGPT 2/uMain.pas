@@ -32,6 +32,12 @@ procedure TForm1.btn1Click(Sender: TObject);
 const
   cAPIKey = '';
 begin
+  if cAPIKey.IsEmpty then
+  begin
+    ShowMessage('You shoud fill the cAPIKey !!!');
+    Exit;
+  end;
+
   mmoOut.Text := TChatGPT.GenerateText(cAPIKey, mmoIn.Text);
 end;
 
