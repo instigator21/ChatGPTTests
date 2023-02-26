@@ -39,7 +39,7 @@ begin
         try
           Request.Client := HTTPClient;
           Request.MethodString := 'POST';
-          Request.URL := 'https://api.openai.com/v1/engines/davinci-codex/completions';
+          Request.URL := 'https://api.openai.com/v1/engines/text-davinci-003/completions';
           Request.SourceStream := RequestContent;
           Request.CustomHeaders['Content-Type'] := 'application/json';
           Request.CustomHeaders['Authorization'] := Format('Bearer %s', [APIKey]);
