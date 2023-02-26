@@ -29,9 +29,10 @@ uses
 {$R *.dfm}
 
 procedure TForm1.btn1Click(Sender: TObject);
-
+const
+  cAPIKey = '';
 begin
-  mmoOut.Text := TChatGPT.GenerateText('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', mmoIn.Text);
+  mmoOut.Text := TChatGPT.GenerateText(cAPIKey, mmoIn.Text);
 end;
 
 end.

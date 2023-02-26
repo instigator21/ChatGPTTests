@@ -33,7 +33,7 @@ object Form1: TForm1
     Height = 89
     Align = alTop
     Lines.Strings = (
-      'mmoIn')
+      'Hello, how are you today? ')
     TabOrder = 1
     ExplicitLeft = 32
     ExplicitTop = 24

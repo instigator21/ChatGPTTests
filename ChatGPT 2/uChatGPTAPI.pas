@@ -28,38 +28,38 @@ var
 begin
   HTTPClient := TNetHTTPClient.Create(nil);
   try
-    var JsonObj1 := TJSONObject.Create(TJSONPair.Create('prompt', TextToProcess));
-    JsonObj1.AddPair(TJSONPair.Create('max_tokens', '60'));
-
-    var JsonString := 
-      '{ "prompt": "Hello, my name is ChatGPT.",'+
-  '"max_tokens": 60 }';
-
-    RequestContent := TStringStream.Create(JsonString, TEncoding.UTF8);
-
+    var JsonObj := TJSONObject.Create()
+        .AddPair(TJSONPair.Create('prompt', TextToProcess))
+        .AddPair(TJSONPair.Create('max_tokens', TJSONNumber.Create(60)));
     try
-      Request := TNetHTTPRequest.Create(nil);
+      RequestContent := TStringStream.Create(JsonObj.ToString, TEncoding.UTF8);      
+
       try
-        Request.Client := HTTPClient;
-        Request.MethodString := 'POST';
-        Request.URL := 'https://api.openai.com/v1/engines/davinci-codex/completions';
-        Request.ContentStream := RequestContent;
-        Request.CustomHeaders['Content-Type'] := 'application/raw';
-        Request.CustomHeaders['Authorization'] := Format('Bearer %s', [APIKey]);
-        ResponseContent := Request.Execute().ContentAsString();
-        ResponseJSON := TJSONObject.ParseJSONValue(ResponseContent) as TJSONObject;
+        Request := TNetHTTPRequest.Create(nil);
         try
-          ChoiceObject := (ResponseJSON.Get('choices').JsonValue as TJSONArray).Items[0] as TJSONObject;
-          GeneratedText := ChoiceObject.GetValue('text') as TJSONString;
-          Result := GeneratedText.Value;
+          Request.Client := HTTPClient;
+          Request.MethodString := 'POST';
+          Request.URL := 'https://api.openai.com/v1/engines/davinci-codex/completions';
+          Request.SourceStream := RequestContent;
+          Request.CustomHeaders['Content-Type'] := 'application/json';
+          Request.CustomHeaders['Authorization'] := Format('Bearer %s', [APIKey]);
+          ResponseContent := Request.Execute().ContentAsString();
+          ResponseJSON := TJSONObject.ParseJSONValue(ResponseContent) as TJSONObject;
+          try
+            ChoiceObject := (ResponseJSON.Get('choices').JsonValue as TJSONArray).Items[0] as TJSONObject;
+            GeneratedText := ChoiceObject.GetValue('text') as TJSONString;
+            Result := GeneratedText.Value;
+          finally
+            ResponseJSON.Free;
+          end;
         finally
-          ResponseJSON.Free;
+          Request.Free;
         end;
       finally
-        Request.Free;
-      end;
+        RequestContent.Free;
+      end;      
     finally
-      RequestContent.Free;
+      JsonObj.Free;
     end;
   finally
     HTTPClient.Free;
