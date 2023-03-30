@@ -5,3 +5,15 @@
 *.tvsconfig
 *.~*
 *.dproj.local
+*.1
+*.v2
+*.vsidx
+*.lock
+TaskManagement/TaskManagement/.vs/TaskManagement/v17/.suo
+*.testlog
+TaskManagement/TaskManagement/.vs/TaskManagement/v17/TestStore/0/testlog.manifest
+*.dll
+TaskManagement/TaskManagement/TaskManagement.Tests/bin/Debug/net6.0/CoverletSourceRootsMapping
+*.pdb
+*.cache
+TaskManagement/TaskManagement/TaskManagement.Tests/obj/Debug/net6.0/TaskManagement.Tests.csproj.FileListAbsolute.txt
