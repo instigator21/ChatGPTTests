@@ -5,6 +5,7 @@ using TaskManagement.Models;
 using TaskManagement.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace TaskManagement.Tests
 {
@@ -157,5 +158,60 @@ namespace TaskManagement.Tests
             // Assert
             Assert.IsType<NotFoundResult>(result);
         }
+
+        [Fact]
+        public void CreateTask_ReturnsBadRequest_WhenValidationFails()
+        {
+            // Arrange
+            var invalidTask = new TaskModel { Title = string.Empty, Description = "Task 1 description", Status = Models.TaskStatus.ToDo };
+
+            // Manually add validation error to the ModelState
+            var modelState = new ModelStateDictionary();
+            modelState.AddModelError("Title", "The Title field is required.");
+            _taskController.ModelState.AddModelError("Title", "The Title field is required.");
+
+            // Act
+            var result = _taskController.CreateTask(invalidTask);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public void UpdateTask_ReturnsBadRequest_WhenValidationFails()
+        {
+            // Arrange
+            var invalidTask = new TaskModel { ID = 1, Title = string.Empty, Description = "Task 1 description", Status = Models.TaskStatus.ToDo };
+            _mockTaskRepository.Setup(repo => repo.GetById(invalidTask.ID)).Returns(invalidTask);
+
+            // Manually add validation error to the ModelState
+            var modelState = new ModelStateDictionary();
+            modelState.AddModelError("Title", "The Title field is required.");
+            _taskController.ModelState.AddModelError("Title", "The Title field is required.");
+
+            // Act
+            var result = _taskController.UpdateTask(invalidTask.ID, invalidTask);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateTask_SetsCompletedAt_WhenStatusIsDone()
+        {
+            // Arrange
+            var task = new TaskModel { ID = 1, Title = "Task 1", Description = "Task 1 description", Status = Models.TaskStatus.ToDo };
+            var updatedTask = new TaskModel { ID = 1, Title = "Task 1", Description = "Task 1 description", Status = Models.TaskStatus.Done };
+            _mockTaskRepository.Setup(repo => repo.GetById(task.ID)).Returns(task);
+            _mockTaskRepository.Setup(repo => repo.Update(It.IsAny<TaskModel>())).Callback<TaskModel>(t => task.CompletedAt = DateTime.Now);
+
+            // Act
+            var result = _taskController.UpdateTask(task.ID, updatedTask);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+            Assert.NotNull(task.CompletedAt);
+        }
+
     }
 }

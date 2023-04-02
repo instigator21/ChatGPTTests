@@ -1,27 +1,31 @@
 ﻿using Xunit;
 using TaskManagement.DTOs;
 
-public class TaskDTOTests
+namespace TaskManagement.Tests
 {
-    [Fact]
-    public void TaskDTO_PropertiesInitialization_Success()
+    public class TaskDTOTests
     {
-        // Arrange
-        var taskDTO = new TaskDTO
+        [Fact]
+        public void TaskDTO_PropertiesInitialization_Success()
         {
-            ID = 1,
-            Title = "Test Task",
-            Description = "This is a test task",
-            Status = TaskManagement.Models.TaskStatus.ToDo
-        };
+            // Arrange
+            var taskDTO = new TaskDTO
+            {
+                ID = 1,
+                Title = "Test Task",
+                Description = "This is a test task",
+                Status = TaskManagement.Models.TaskStatus.ToDo
+            };
 
-        // Act
-        // No action needed, since we only initialize properties
+            // Act
+            // No action needed, since we only initialize properties
 
-        // Assert
-        Assert.Equal(1, taskDTO.ID);
-        Assert.Equal("Test Task", taskDTO.Title);
-        Assert.Equal("This is a test task", taskDTO.Description);
-        Assert.Equal(TaskManagement.Models.TaskStatus.ToDo, taskDTO.Status);
+            // Assert
+            Assert.Equal(1, taskDTO.ID);
+            Assert.Equal("Test Task", taskDTO.Title);
+            Assert.Equal("This is a test task", taskDTO.Description);
+            Assert.Equal(TaskManagement.Models.TaskStatus.ToDo, taskDTO.Status);
+        }
     }
 }
+

@@ -46,6 +46,12 @@ namespace TaskManagement.Controllers
         [SwaggerOperation(Summary = "Create Task")]
         public ActionResult<TaskModel> CreateTask(TaskModel taskModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            taskModel.CreatedAt = DateTime.UtcNow;
             _taskRepository.Add(taskModel);
             var createdTask = _taskRepository.GetById(taskModel.ID);
             return CreatedAtAction(nameof(GetTaskById), new { id = createdTask.ID }, createdTask);
@@ -62,6 +68,11 @@ namespace TaskManagement.Controllers
                 return BadRequest();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var existingTask = _taskRepository.GetById(id);
 
             if (existingTask == null)
@@ -70,8 +81,10 @@ namespace TaskManagement.Controllers
             }
 
             _taskRepository.Update(taskModel);
+            
             return NoContent();
         }
+
 
         // DELETE: api/task/{id}
         [HttpDelete("{id}")]
