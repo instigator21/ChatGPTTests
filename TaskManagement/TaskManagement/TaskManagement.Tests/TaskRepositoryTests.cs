@@ -40,19 +40,34 @@ namespace TaskManagement.Tests
         public void AddThreeTasks_Success()
         {
             // Arrange
-            var task1 = new TaskModel { Title = "Task 1", Description = "This is task 1", Status = Models.TaskStatus.ToDo };
-            var task2 = new TaskModel { Title = "Task 2", Description = "This is task 2", Status = Models.TaskStatus.ToDo };
-            var task3 = new TaskModel { Title = "Task 3", Description = "This is task 3", Status = Models.TaskStatus.ToDo };
+            var task1 = new TaskModel { Title = "Task 1", Description = "Task 1 description", Status = Models.TaskStatus.ToDo};
+            var task2 = new TaskModel { Title = "Task 2", Description = "Task 2 description", Status = Models.TaskStatus.InProgress };
+            var task3 = new TaskModel { Title = "Task 3", Description = "Task 3 description", Status = Models.TaskStatus.Done};
 
             // Act
             _taskRepository.Add(task1);
             _taskRepository.Add(task2);
             _taskRepository.Add(task3);
 
+            var retrievedTask1 = _taskRepository.GetById(task1.ID);
+            var retrievedTask2 = _taskRepository.GetById(task2.ID);
+            var retrievedTask3 = _taskRepository.GetById(task3.ID);
+
             // Assert
-            Assert.Equal(1, task1.ID);
-            Assert.Equal(2, task2.ID);
-            Assert.Equal(3, task3.ID);
+            Assert.NotNull(retrievedTask1);
+            Assert.Equal(task1.Title, retrievedTask1.Title);
+            Assert.Equal(task1.Description, retrievedTask1.Description);
+            Assert.Equal(task1.Status, retrievedTask1.Status);
+
+            Assert.NotNull(retrievedTask2);
+            Assert.Equal(task2.Title, retrievedTask2.Title);
+            Assert.Equal(task2.Description, retrievedTask2.Description);
+            Assert.Equal(task2.Status, retrievedTask2.Status);
+
+            Assert.NotNull(retrievedTask3);
+            Assert.Equal(task3.Title, retrievedTask3.Title);
+            Assert.Equal(task3.Description, retrievedTask3.Description);
+            Assert.Equal(task3.Status, retrievedTask3.Status);
         }
 
         [Fact]
