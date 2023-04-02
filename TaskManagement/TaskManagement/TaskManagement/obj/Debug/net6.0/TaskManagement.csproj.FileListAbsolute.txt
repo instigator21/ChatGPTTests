@@ -32,3 +32,4 @@ D:\Work\Repositories\ChatGPTTests\TaskManagement\TaskManagement\TaskManagement\o
 D:\Work\Repositories\ChatGPTTests\TaskManagement\TaskManagement\TaskManagement\obj\Debug\net6.0\ref\TaskManagement.dll
 D:\Work\Repositories\ChatGPTTests\TaskManagement\TaskManagement\TaskManagement\bin\Debug\net6.0\AutoMapper.dll
 D:\Work\Repositories\ChatGPTTests\TaskManagement\TaskManagement\TaskManagement\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\Work\Repositories\ChatGPTTests\TaskManagement\TaskManagement\TaskManagement\bin\Debug\net6.0\Swashbuckle.AspNetCore.Annotations.dll
