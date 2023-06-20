@@ -4,5 +4,5 @@ export function containsEuro(text: string): boolean {
 
 export function isPayoffCommand(text: string): boolean {
   const lowerText = text.toLowerCase();
-  return lowerText === 'payoff' || lowerText === 'pay off' || lowerText === 'payof';
+  return lowerText === '/payoff' || lowerText === '/pay off' || lowerText === '/payof';
 }
