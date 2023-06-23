@@ -42,7 +42,7 @@ export class SpendingDAO implements ISpendingDAO {
   }
 
   async calculateUserSpendings(userId: string): Promise<{currency: string, total: number}[]> {
-    const sql = 'SELECT currency, SUM(amount) as total FROM spendings WHERE user_id = ? GROUP BY currency';
+    const sql = 'SELECT currency, SUM(amount) as total FROM spendings WHERE user_id = ? AND paid_off <> 1 GROUP BY currency';
     return this.db.all(sql, [userId]);
   }
 }
