@@ -1,5 +1,9 @@
-1. Add calculate who needs to pay to who
-2. Add the category from ChatGPT
-3. Edit category
+1. Help
+2. Logs
+3. ChatID
 4. Add Spendings from time till time 
 5. Import data to Google sheets
+6. Add the category from ChatGPT
+7. Edit category
+8. Message with all details 
+
